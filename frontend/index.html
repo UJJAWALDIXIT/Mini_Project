@@ -1,0 +1,287 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StudyAI</title><link rel="stylesheet" href="style.css"></head><body>
+<div id="toast"></div>
+<div id="auth" class="auth"><div class="authbox"><h1>Study<span>AI</span></h1><p>Your AI-powered student productivity assistant.</p><div class="tabs"><button onclick="mode('login')" id="lt">Login</button><button onclick="mode('reg')" id="rt">Register</button></div>
+<form id="login"><input id="le" type="email" placeholder="Email" required><input id="lp" type="password" placeholder="Password" required><button>Login</button></form>
+<form id="reg" class="hide"><input id="rn" placeholder="Full name" required><input id="re" type="email" placeholder="Email" required><input id="rp" type="password" placeholder="Password (6+)" required><input id="rb" value="CSE-AI" placeholder="Branch"><input id="rs" value="4" placeholder="Semester"><button>Create Account</button></form></div></div>
+<div id="app" class="hide"><header><b>Study<span>AI</span></b><div><span id="welcome"></span><button class="out" onclick="logout()">Logout</button></div></header><div class="layout"><aside>
+<button class="nav active" onclick="go('dash',this)">🏠 Dashboard</button><button class="nav" onclick="go('subjects',this)">📚 Subjects</button><button class="nav" onclick="go('att',this)">📊 Attendance</button><button class="nav" onclick="go('assign',this)">📝 Assignments</button><button class="nav" onclick="go('plan',this)">🗓️ Study Planner</button><button class="nav" onclick="go('ai',this)">🤖 AI Assistant</button><button class="nav" onclick="go('notes',this)">📄 AI Notes</button><button class="nav" onclick="go('quiz',this)">🧠 AI Quiz</button><button class="nav" onclick="go('analytics',this)">📈 Analytics</button></aside>
+<main>
+<section id="dash"><p class="eyebrow">STUDENT WORKSPACE</p><h2>Welcome, <span id="dn"></span> 👋</h2><div id="stats" class="stats"></div><div class="two"><div class="card"><h3>Today's Classes</h3><div id="classes"></div></div><div class="card"><h3>Assignments</h3><div id="dassign"></div></div></div><div class="card"><h3>Attendance</h3><div id="datt"></div></div></section>
+<section id="subjects" class="hide"><h2>Subjects</h2><div class="card row"><input id="sname" placeholder="e.g. Data Structures"><button onclick="addSubject()">Add</button></div><div id="sl" class="cards"></div></section>
+<section id="att" class="hide"><h2>Attendance Manager</h2><div id="al" class="cards"></div></section>
+<section id="assign" class="hide"><h2>Assignment Manager</h2><div class="card formgrid"><input id="atitle" placeholder="Title"><select id="asub"></select><input id="adead" placeholder="Deadline"><select id="apri"><option>High</option><option selected>Medium</option><option>Low</option></select><button onclick="addAssignment()">Add Assignment</button></div><div id="alist" class="cards"></div></section>
+<section id="plan" class="hide"><h2>Personalized Study Planner</h2><div class="card formgrid"><input id="mins" type="number" value="180"><input id="weak" placeholder="Weak subject"><input id="urgent" placeholder="Urgent topic/deadline"><input id="psubs" placeholder="Subjects: DSA, DBMS, Math"><button onclick="makePlan()">Generate Plan</button></div><div id="planout" class="timeline"></div></section>
+<section id="ai" class="hide ai-page">
+
+  <div class="ai-hero">
+    <div class="ai-hero-copy">
+
+      <div class="ai-icon">✦</div>
+
+      <div>
+        <p class="ai-kicker">STUDYAI • INTELLIGENT LEARNING</p>
+
+        <h2>AI Assistant</h2>
+
+        <p class="ai-subtitle">
+          Your personal study companion for doubts, coding, notes and exam preparation.
+        </p>
+      </div>
+
+    </div>
+
+    <div id="aiStatus" class="ai-status ai-status-check">
+      ● Checking AI
+    </div>
+  </div>
+
+
+  <div class="ai-grid">
+
+    <!-- MAIN AI PANEL -->
+    <div class="ai-main-panel">
+
+      <div class="ai-panel-head">
+
+        <div>
+          <span class="ai-mini-badge">ASK ANYTHING</span>
+
+          <h3>How can I help you today?</h3>
+
+          <p class="muted">
+            Ask a concept, solve a problem, generate code,
+            or prepare for your exam.
+          </p>
+        </div>
+
+        <button class="ai-ghost" onclick="clearAnswer()">
+          Clear
+        </button>
+
+      </div>
+
+
+      <!-- PROMPT CHIPS -->
+      <div class="ai-prompt-row">
+
+        <button
+          class="prompt-chip"
+          onclick="setPrompt('Explain stack in simple language with a real-life example.')">
+          📘 Explain a concept
+        </button>
+
+        <button
+          class="prompt-chip"
+          onclick="setPrompt('Solve this problem step by step and explain the approach.')">
+          🧩 Solve a problem
+        </button>
+
+        <button
+          class="prompt-chip"
+          onclick="setPrompt('Write a simple Python program for this topic and explain the code.')">
+          💻 Write code
+        </button>
+
+        <button
+          class="prompt-chip"
+          onclick="setPrompt('Give me important exam points and frequently asked questions for this topic.')">
+          🎯 Exam prep
+        </button>
+
+      </div>
+
+
+      <!-- INPUT -->
+      <div class="ai-input-wrap">
+
+        <textarea
+          id="q"
+          rows="6"
+          maxlength="5000"
+          placeholder="Ask your question here... e.g. Explain DBMS normalization with an example"
+          onkeydown="if(event.ctrlKey&&event.key==='Enter')ask()"
+        ></textarea>
+
+        <div class="ai-input-footer">
+
+          <span>Ctrl + Enter to ask</span>
+
+          <button
+            id="askBtn"
+            class="ai-send"
+            onclick="ask()"
+          >
+            <span>Ask StudyAI</span>
+            <span>➜</span>
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- RESPONSE -->
+      <div class="ai-answer-box">
+
+        <div class="ai-answer-head">
+
+          <div>
+            <span class="ai-bot-dot">✦</span>
+            <strong>StudyAI Response</strong>
+          </div>
+
+          <button
+            class="ai-copy"
+            onclick="copyAnswer()">
+            Copy
+          </button>
+
+        </div>
+
+        <pre id="ans" class="ai-response">
+Ask an academic question to start. Your answer will appear here.
+        </pre>
+
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT SIDE -->
+    <aside class="ai-side-panel">
+
+      <!-- QUICK PROMPTS -->
+      <div class="ai-side-card">
+
+        <div class="ai-side-title">
+
+          <span class="side-icon">💡</span>
+
+          <div>
+            <h4>Quick Prompts</h4>
+            <p>Try one of these to get started</p>
+          </div>
+
+        </div>
+
+
+        <button
+          class="quick-prompt"
+          onclick="setPrompt('Explain a difficult CSE concept in simple language with an example.')">
+
+          <span>📚</span>
+
+          <div>
+            <b>Explain a concept</b>
+            <small>Simple explanation + example</small>
+          </div>
+
+          <span>›</span>
+
+        </button>
+
+
+        <button
+          class="quick-prompt"
+          onclick="setPrompt('Help me solve this programming problem step by step.')">
+
+          <span>∑</span>
+
+          <div>
+            <b>Step-by-step solution</b>
+            <small>Approach, logic and answer</small>
+          </div>
+
+          <span>›</span>
+
+        </button>
+
+
+        <button
+          class="quick-prompt"
+          onclick="setPrompt('Write code for this problem and explain each important line.')">
+
+          <span>&lt;/&gt;</span>
+
+          <div>
+            <b>Code help</b>
+            <small>Runnable code with explanation</small>
+          </div>
+
+          <span>›</span>
+
+        </button>
+
+
+        <button
+          class="quick-prompt"
+          onclick="setPrompt('Make concise revision notes and important exam questions for this topic.')">
+
+          <span>📝</span>
+
+          <div>
+            <b>Revision notes</b>
+            <small>Quick study-ready notes</small>
+          </div>
+
+          <span>›</span>
+
+        </button>
+
+      </div>
+
+
+      <!-- FEATURES -->
+      <div class="ai-side-card ai-feature-card">
+
+        <div class="ai-side-title">
+
+          <span class="side-icon">⚡</span>
+
+          <div>
+            <h4>Built for Students</h4>
+            <p>Focused on everyday study tasks</p>
+          </div>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+          <div>
+            <span>🎓</span>
+            <b>Doubt Solving</b>
+            <small>Clear explanations</small>
+          </div>
+
+          <div>
+            <span>💻</span>
+            <b>Code Help</b>
+            <small>Learn by example</small>
+          </div>
+
+          <div>
+            <span>📄</span>
+            <b>Notes</b>
+            <small>Fast revision</small>
+          </div>
+
+          <div>
+            <span>🏆</span>
+            <b>Exam Prep</b>
+            <small>Important points</small>
+          </div>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+  </div>
+
+</section>
+<section id="notes" class="hide"><h2>AI Notes Summarizer</h2><div class="card"><input id="pdf" type="file" accept=".pdf"><button onclick="summary()">Summarize PDF</button><pre id="sum"></pre></div></section>
+<section id="quiz" class="hide"><h2>AI Quiz Generator</h2><div class="card row"><input id="topic" placeholder="Topic e.g. DBMS Normalization"><input id="count" type="number" value="5" min="3" max="10"><button onclick="makeQuiz()">Generate</button></div><div id="quizout"></div></section>
+<section id="analytics" class="hide"><h2>Progress Analytics</h2><div id="ac" class="stats"></div><div class="card"><div id="recent"></div></div></section>
+</main></div></div><script src="app.js"></script></body></html>
