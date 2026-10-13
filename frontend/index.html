@@ -47,9 +47,12 @@
     <div id="app" class="hide">
       <header>
         <b>Study<span>AI</span></b>
-        <div>
-          <span id="welcome"></span
-          ><button class="out" onclick="logout()">Logout</button>
+        <div class="header-actions">
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch theme" aria-pressed="false">
+            <span class="theme-knob">☼</span>
+          </button>
+          <span id="welcome"></span>
+          <button class="out" onclick="logout()">Logout</button>
         </div>
       </header>
       <div class="layout">
@@ -75,10 +78,27 @@
             <p class="eyebrow">STUDENT WORKSPACE</p>
             <h2>Welcome, <span id="dn"></span> 👋</h2>
             <div id="stats" class="stats"></div>
-            <div class="two"></div>
-            <div class="card">
-              <h3>Attendance</h3>
-              <div id="datt"></div>
+            <div class="card weekly-overview">
+              <h3>Weekly Overview</h3>
+              <div class="overview-content">
+                <div class="progress-wrap">
+                  <div class="progress-ring" aria-label="100 percent complete">
+                    <div class="progress-center">
+                      <strong>100%</strong>
+                      <span>Complete</span>
+                    </div>
+                  </div>
+                  <div class="overview-actions" aria-label="Study shortcuts">
+                    <button type="button" aria-label="Subjects">▣</button>
+                    <button type="button" aria-label="Settings">⚙</button>
+                    <button type="button" aria-label="Planner">▣</button>
+                  </div>
+                </div>
+                <div class="module-summary">
+                  <strong>Data Structure</strong>
+                  <span>5/5 Modules Completed</span>
+                </div>
+              </div>
             </div>
           </section>
           <section id="subjects" class="hide">

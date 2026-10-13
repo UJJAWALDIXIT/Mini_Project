@@ -239,119 +239,41 @@ async function dash() {
       (item) => item.status !== "Completed",
     ).length;
 
+    const todayClass = data.today_classes[0];
+    const subjectCount = data.subjects?.length || data.attendance.length;
+
     $("stats").innerHTML = `
-
-            <div class="stat">
-                Attendance
-                <strong>
-                    ${averageAttendance.toFixed(1)}%
-                </strong>
-            </div>
-
-            <div class="stat">
-                Pending Work
-                <strong>
-                    ${pendingAssignments}
-                </strong>
-            </div>
-
-            <div class="stat">
-                Subjects
-                <strong>
-                    ${data.attendance.length}
-                </strong>
-            </div>
-
-            <div class="stat">
-                Study Target
-                <strong>
-                    3h
-                </strong>
-            </div>
-
-             <div class="card">
-                <h3>Today's Classes</h3>
-                <div id="classes"></div>
-              </div>
-              <div class="card">
-                <h3>Assignments</h3>
-                <div id="dassign"></div>
-              </div>
-
-        `;
-
-    $("classes").innerHTML =
-      data.today_classes
-        .map(
-          (item) => `
-
-                    <div class="row">
-
-                        <span>
-                            ${item.subject}
-                        </span>
-
-                        <span class="badge">
-                            ${item.time}
-                        </span>
-
-                    </div>
-
-                `,
-        )
-        .join("") || "<p>No classes today.</p>";
-
-    $("dassign").innerHTML =
-      data.assignments
-        .slice(0, 5)
-        .map(
-          (item) => `
-
-                    <div class="row">
-
-                        <span>
-                            ${item.title}
-                        </span>
-
-                        <span class="badge">
-                            ${item.deadline}
-                        </span>
-
-                    </div>
-
-                `,
-        )
-        .join("") || "<p>No assignments.</p>";
-
-    $("datt").innerHTML = data.attendance
-      .map(
-        (item) => `
-
-                    <div>
-
-                        <b>
-                            ${item.subject}
-                        </b>
-
-                        <div class="bar">
-
-                            <i
-                                style="
-                                    width:${Math.min(100, item.percentage)}%
-                                "
-                            ></i>
-
-                        </div>
-
-                        <span>
-                            ${item.percentage}%
-                        </span>
-
-                    </div>
-
-                `,
-      )
-      .join("");
+      <div class="stat">
+        <span class="stat-icon">✓</span>
+        <span class="stat-title">Attendance</span>
+        <strong>(${averageAttendance.toFixed(1)}%)</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">☷</span>
+        <span class="stat-title">Pending Work</span>
+        <strong>(${pendingAssignments})</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">▣</span>
+        <span class="stat-title">My Subjects</span>
+        <strong>(${subjectCount})</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">◷</span>
+        <span class="stat-title">Today's Classes</span>
+        <strong>(${todayClass ? `${todayClass.time} - ${todayClass.subject}` : "None today"})</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">▣</span>
+        <span class="stat-title">Due Assignments</span>
+        <strong>(${data.assignments.length ? `${data.assignments.length} due` : "None due today"})</strong>
+      </div>
+      <div class="stat">
+        <span class="stat-icon">◎</span>
+        <span class="stat-title">Study Target</span>
+        <strong>(3h)</strong>
+      </div>
+    `;
   } catch (error) {
     toast(error.message);
   }
@@ -1074,6 +996,16 @@ async function analytics() {
     /* Analytics errors are ignored
            so the rest of the dashboard keeps working. */
   }
+}
+
+const themeToggle = $("themeToggle");
+
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const isDark = document.body.classList.toggle("dark-mode");
+    themeToggle.setAttribute("aria-pressed", String(isDark));
+    themeToggle.querySelector(".theme-knob").textContent = isDark ? "☾" : "☼";
+  });
 }
 
 /* =========================================================
