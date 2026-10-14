@@ -1000,11 +1000,20 @@ async function analytics() {
 
 const themeToggle = $("themeToggle");
 
+function setTheme(isDark) {
+  document.body.classList.toggle("dark-mode", isDark);
+  if (!themeToggle) return;
+  themeToggle.setAttribute("aria-pressed", String(isDark));
+  themeToggle.querySelector(".theme-knob").textContent = isDark ? "☾" : "☼";
+}
+
+setTheme(sessionStorage.getItem("studyai-theme") === "dark");
+
 if (themeToggle) {
   themeToggle.addEventListener("click", () => {
-    const isDark = document.body.classList.toggle("dark-mode");
-    themeToggle.setAttribute("aria-pressed", String(isDark));
-    themeToggle.querySelector(".theme-knob").textContent = isDark ? "☾" : "☼";
+    const isDark = !document.body.classList.contains("dark-mode");
+    setTheme(isDark);
+    sessionStorage.setItem("studyai-theme", isDark ? "dark" : "light");
   });
 }
 

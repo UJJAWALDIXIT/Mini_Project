@@ -36,6 +36,37 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: Inter, "Segoe UI", Arial, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode {
+  --bg: #151827;
+  --b: #2d3348;
+  --muted: #aab2c5;
+  --text: #f4f6fb;
+  --white: #202438;
+}
+
+body.dark-mode header,
+body.dark-mode aside,
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea,
+body.dark-mode .out,
+body.dark-mode .tabs button,
+body.dark-mode #subjects > .row #sname {
+  background: var(--white);
+  color: var(--text);
+}
+
+body.dark-mode .theme-toggle {
+  background: #8b79e8;
+  justify-content: flex-end;
+}
+
+body.dark-mode .theme-knob {
+  background: #292d44;
+  color: #f4f6fb;
 }
 
 button,
@@ -521,10 +552,53 @@ h2 {
 
 .cards {
   display: grid;
-
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-
   gap: 15px;
+}
+
+#subjects > .row {
+  gap: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+#subjects > .row #sname {
+  flex: 3;
+  border-color: #eef0f5;
+  background: #ffffff;
+}
+
+#subjects > .row button {
+  flex: 1;
+  min-height: 42px;
+}
+
+#subjects #sl.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#subjects #sl .item {
+  width: 100%;
+  min-height: 61px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  box-shadow: 0 5px 16px rgba(32, 37, 90, 0.045);
+}
+
+#subjects #sl .item b {
+  display: block;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+#subjects #sl .item p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 /* =========================================================
@@ -1559,12 +1633,24 @@ h2 {
     grid-template-columns: 1fr;
   }
 
-  .row {
-    flex-direction: column;
+.row {
+  flex-direction: column;
+  }
+
+  #subjects > .row {
+  flex-direction: row;
+  }
+
+  #subjects > .row > * {
+  width: auto;
+  }
+
+  #subjects > .row #sname {
+  min-width: 0;
   }
 
   .row > * {
-    width: 100%;
+  width: 100%;
   }
 
   .ai-head {
