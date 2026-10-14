@@ -114,21 +114,32 @@
           </section>
           <section id="att" class="hide">
             <h2>Attendance Manager</h2>
-            <div id="al" class="cards"></div>
+            <div class="card table-wrapper">
+              <div class="table-header att-grid">
+                <span>Subject</span><span>Progress</span><span>Summary</span><span>Edit Attendance</span><span>Actions</span>
+              </div>
+              <div id="al"></div>
+            </div>
           </section>
           <section id="assign" class="hide">
             <h2>Assignment Manager</h2>
-            <div class="card formgrid">
-              <input id="atitle" placeholder="Title" /><select
-                id="asub"
-              ></select
-              ><input id="adead" placeholder="Deadline" /><select id="apri">
-                <option>High</option>
-                <option selected>Medium</option>
-                <option>Low</option></select
-              ><button onclick="addAssignment()">Add Assignment</button>
+            <div class="card formgrid assignment-form">
+              <label class="sr-only" for="atitle">Assignment title</label>
+              <input id="atitle" placeholder="Title" />
+              <label class="sr-only" for="asub">Subject</label>
+              <select id="asub"></select>
+              <input id="adead" type="date" placeholder="Deadline" />
+              <select id="apri">
+                <option>High</option><option selected>Medium</option><option>Low</option>
+              </select>
+              <button onclick="addAssignment()">Add Assignment</button>
             </div>
-            <div id="alist" class="cards"></div>
+            <div class="card table-wrapper assignment-list-wrapper">
+              <div class="table-header assign-grid">
+                <span>Assignment Title</span><span>Subject</span><span>Priority</span><span>Due Date</span><span>Status</span><span>Actions</span>
+              </div>
+              <div id="alist"></div>
+            </div>
           </section>
           <section id="plan" class="hide">
             <h2>Personalized Study Planner</h2>

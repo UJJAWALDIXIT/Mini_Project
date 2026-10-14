@@ -323,91 +323,38 @@ async function academic() {
 
     const dashboard = await api("/dashboard");
 
-    $("al").innerHTML = dashboard.attendance
-      .map(
-        (item) => `
-
-                    <div class="item">
-
-                        <b>
-                            ${item.subject}
-                        </b>
-
-                        <p>
-                            ${item.attended}/${item.total}
-                            —
-                            ${item.percentage}%
-                        </p>
-
-                        <div class="row">
-
-                            <input
-                                id="at${item.subject_id}"
-                                type="number"
-                                value="${item.attended}"
-                            >
-
-                            <input
-                                id="to${item.subject_id}"
-                                type="number"
-                                value="${item.total}"
-                            >
-
-                            <button
-                                onclick="saveAtt(${item.subject_id})"
-                            >
-                                Save
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                `,
-      )
-      .join("");
+  $("al").innerHTML = dashboard.attendance
+  .map((item) => `
+    <div class="table-row att-grid">
+      <strong>${item.subject}</strong>
+      <div class="attendance-progress">
+        <span style="width:${Math.min(100, item.percentage)}%; background:${item.percentage > 0 ? "#4ade80" : "#ef4444"}"></span>
+      </div>
+      <span>${item.attended}/${item.total} — ${item.percentage}%</span>
+      <div class="input-pill">
+        <input id="at${item.subject_id}" type="number" value="${item.attended}" aria-label="Attended classes for ${item.subject}">
+        <input id="to${item.subject_id}" type="number" value="${item.total}" aria-label="Total classes for ${item.subject}">
+      </div>
+      <button class="btn-soft" onclick="saveAtt(${item.subject_id})">Save</button>
+    </div>
+  `).join("");
 
     const assignments = await api("/assignments");
 
-    $("alist").innerHTML =
-      assignments
-        .map(
-          (item) => `
-
-                    <div class="item">
-
-                        <div class="row">
-
-                            <b>
-                                ${item.title}
-                            </b>
-
-                            <span class="badge">
-                                ${item.priority}
-                            </span>
-
-                        </div>
-
-                        <p>
-                            Deadline:
-                            ${item.deadline}
-                        </p>
-
-                        <button
-                            onclick="complete(${item.id})"
-                        >
-                            ${
-                              item.status === "Completed"
-                                ? "Completed"
-                                : "Mark Complete"
-                            }
-                        </button>
-
-                    </div>
-
-                `,
-        )
-        .join("") || "<div class='card'>No assignments.</div>";
+  const badgeClass = (value) => value.toLowerCase().replace(/\\s+/g, "-");
+  $("alist").innerHTML = assignments.map((item) => `
+    <div class="table-row assign-grid">
+      <strong>${item.title}</strong>
+      <span>${item.subject || "—"}</span>
+      <span class="status-badge priority-${badgeClass(item.priority)}">${item.priority}</span>
+      <span>${item.deadline || "—"}</span>
+      <span class="status-badge status-${badgeClass(item.status)}">${item.status}</span>
+      <div class="assignment-actions">
+        <button onclick="complete(${item.id})">${item.status === "Completed" ? "Completed" : "Mark Complete"}</button>
+        <button class="btn-outline" onclick="editAssignment(${item.id})">Edit</button>
+      </div>
+    </div>
+  `).join("") || "<div class='empty-state'>No assignments.</div>";
   } catch (error) {
     toast(error.message);
   }
@@ -505,7 +452,22 @@ async function addAssignment() {
    COMPLETE ASSIGNMENT
    ========================================================= */
 
-async function complete(id) {
+  async function editAssignment(id) {
+  try {
+    const assignment = (await api("/assignments")).find((item) => item.id === id);
+    if (!assignment) return;
+    $("atitle").value = assignment.title || "";
+    $("asub").value = assignment.subject_id || "";
+    $("adead").value = assignment.deadline || "";
+    $("apri").value = assignment.priority || "Medium";
+    $("atitle").focus();
+    toast("Assignment loaded for editing. Update the fields and add it again.");
+  } catch (error) {
+    toast(error.message);
+  }
+  }
+
+  async function complete(id) {
   try {
     await api("/assignments/" + id, {
       method: "PATCH",
