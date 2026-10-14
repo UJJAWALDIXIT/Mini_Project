@@ -143,16 +143,29 @@
           </section>
           <section id="plan" class="hide">
             <h2>Personalized Study Planner</h2>
-            <div class="card formgrid">
-              <input id="mins" type="number" value="180" /><input
-                id="weak"
-                placeholder="Weak subject"
-              /><input id="urgent" placeholder="Urgent topic/deadline" /><input
-                id="psubs"
-                placeholder="Subjects: DSA, DBMS, Math"
-              /><button onclick="makePlan()">Generate Plan</button>
+            <div class="card formgrid planner-form">
+              <div class="time-selector-group">
+                <input id="plan-days" type="number" min="0" placeholder="Days" aria-label="Study days" />
+                <input id="plan-hours" type="number" min="0" placeholder="Hrs" aria-label="Study hours" />
+                <input id="plan-mins" type="number" min="0" value="180" placeholder="Mins" aria-label="Study minutes" />
+              </div>
+              <input id="weak" placeholder="Weak subject" />
+              <input id="urgent" placeholder="Urgent topic/deadline" />
+              <input id="psubs" placeholder="Subjects: DSA, DBMS, Math" />
+              <button onclick="makePlan()">Generate Plan</button>
             </div>
-            <div id="planout" class="timeline"></div>
+            <div class="plan-summary-banner">
+              <h3 id="planSummaryTitle">Your Derived Plan Summary (180 Days)</h3>
+              <div class="summary-widget card">
+                <div class="circle-chart"><span>75%</span></div>
+                <div class="summary-widget-copy">
+                  <span id="planTimeLeft">179 Days 11h 45m 20s Left</span>
+                  <div class="linear-progress"><i></i></div>
+                </div>
+              </div>
+            </div>
+            <h3 class="breakdown-title">Day-Wise Breakdown</h3>
+            <div id="planout"></div>
           </section>
           <section id="ai" class="hide ai-page">
             <div class="ai-hero">

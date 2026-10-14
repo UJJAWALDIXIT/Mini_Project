@@ -491,50 +491,55 @@ async function addAssignment() {
    STUDY PLANNER
    ========================================================= */
 
+let currentPlan = [];
+
+function renderPlan(plan) {
+  currentPlan = plan;
+  $("planout").innerHTML = plan.map((item, index) => `
+    <article class="plan-day-card">
+      <h4>Day ${String(index + 1).padStart(2, "0")}</h4>
+      <div class="plan-card-grid">
+        <div><span class="col-header">Topic</span><span>${item.title || item.topic || "Study session"}</span></div>
+        <div><span class="col-header">Subject</span><span>${item.subject_name || item.subject || "Subject Name"}<br><small class="muted">${item.subject_code || ""}</small></span></div>
+        <div><span class="col-header">Duration</span><span>${item.minutes || 0} min</span></div>
+        <div><span class="col-header">Status</span><span class="badge ${item.completed ? "status-completed" : "status-pending"}">${item.completed ? "Completed" : "Pending"}</span></div>
+        <div class="plan-card-actions"><span class="col-header">Actions</span><div class="plan-card-actions"><button onclick="startPlanItem(${index})">${item.completed ? "Review" : "Start"}</button><button class="btn-outline" onclick="viewPlanDetails(${index})">View Details</button></div></div>
+      </div>
+    </article>
+  `).join("") || "<div class='empty-state'>Generate a plan to see your day-wise breakdown.</div>";
+}
+
 async function makePlan() {
   try {
+    const availableMinutes = (+($("plan-days").value || 0) * 1440) + (+($("plan-hours").value || 0) * 60) + +($("plan-mins").value || 0);
     const data = await api("/planner", {
       method: "POST",
-
       body: JSON.stringify({
-        available_minutes: +$("mins").value,
-
+        available_minutes: availableMinutes,
         weak_subject: $("weak").value,
-
         urgent: $("urgent").value,
-
-        subjects: $("psubs").value.split(","),
+        subjects: $("psubs").value.split(",").map((subject) => subject.trim()).filter(Boolean),
       }),
     });
-
-    $("planout").innerHTML = data.plan
-      .map(
-        (item) => `
-
-                    <div>
-
-                        <b>
-                            ${item.title}
-                        </b>
-
-                        —
-                        ${item.minutes}
-                        min
-
-                        <br>
-
-                        <small>
-                            ${item.reason}
-                        </small>
-
-                    </div>
-
-                `,
-      )
-      .join("");
+    renderPlan(data.plan || []);
+    const days = Math.max(1, Math.ceil(availableMinutes / 1440));
+    $("planSummaryTitle").textContent = `Your Derived Plan Summary (${days} Days)`;
   } catch (error) {
     toast(error.message);
   }
+}
+
+function startPlanItem(index) {
+  if (!currentPlan[index]) return;
+  currentPlan[index].completed = true;
+  renderPlan(currentPlan);
+  toast("Study session marked completed.");
+}
+
+function viewPlanDetails(index) {
+  const item = currentPlan[index];
+  if (!item) return;
+  toast(`${item.title || "Study session"}: ${item.reason || `${item.minutes || 0} minutes planned.`}`);
 }
 
 /* =========================================================

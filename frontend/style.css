@@ -752,9 +752,82 @@ h2 {
   font-size: 12px;
 }
 
-/* =========================================================
-   TIMELINE
-   ========================================================= */
+  .planner-form {
+  grid-template-columns: 1.25fr 1fr;
+  }
+
+  .planner-form .time-selector-group {
+  display: flex;
+  gap: 8px;
+  }
+
+  .planner-form .time-selector-group input { min-width: 0; }
+  .planner-form button { grid-column: 1 / -1; }
+
+  .plan-summary-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 0 16px;
+  }
+
+  .plan-summary-banner h3,
+  .breakdown-title { margin: 0; font-size: 14px; }
+
+  .summary-widget {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  background: var(--white);
+  box-shadow: 0 4px 15px rgba(0,0,0,.05);
+  }
+
+  .circle-chart {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--p) 75%, var(--b) 0);
+  }
+
+  .circle-chart::before {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--white);
+  }
+
+  .circle-chart span { position: relative; z-index: 1; font-size: 9px; }
+  .summary-widget-copy { min-width: 145px; font-size: 12px; }
+  .linear-progress { height: 6px; margin-top: 6px; border-radius: 4px; background: var(--b); overflow: hidden; }
+  .linear-progress i { display: block; width: 90%; height: 100%; border-radius: 4px; background: var(--p); }
+
+  .plan-day-card {
+  background: var(--white);
+  border: 1px solid var(--b);
+  border-radius: 12px;
+  padding: 12px;
+  margin: 10px 0;
+  }
+
+  .plan-day-card h4 { margin: 0; font-size: 13px; }
+  .plan-card-grid { display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 1.5fr; gap: 16px; align-items: start; margin-top: 12px; }
+  .plan-card-grid > div { display: grid; gap: 4px; font-size: 12px; }
+  .col-header { font-size: 11px; font-weight: bold; color: var(--text); margin-bottom: 4px; display: block; }
+  .muted { color: var(--muted); }
+  .plan-card-actions { display: flex !important; gap: 8px !important; align-items: center; }
+  .plan-card-actions button { padding: 6px 12px; font-size: 11px; }
+
+  /* =========================================================
+  TIMELINE
+  ========================================================= */
 
 .timeline {
   display: grid;
@@ -1714,6 +1787,12 @@ h2 {
 
   .table-wrapper { overflow-x: auto; }
   .table-header, .table-row { min-width: 850px; }
+  .plan-summary-banner { align-items: flex-start; flex-direction: column; }
+  .summary-widget { align-self: stretch; justify-content: center; }
+  .planner-form { grid-template-columns: 1fr; }
+  .plan-card-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .plan-card-actions { grid-column: 1 / -1; }
+  .plan-card-actions button { flex: 1; }
   .assignment-form { grid-template-columns: 1fr; }
   .assignment-form button { grid-column: auto; }
 
