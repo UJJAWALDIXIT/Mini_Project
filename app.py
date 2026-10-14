@@ -6,8 +6,7 @@ import re
 from datetime import datetime, timedelta
 from functools import wraps
 
-from flask import Flask, request, send_from_directory
-
+from flask import Flask, request, send_from_directory, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -2485,6 +2484,39 @@ def analytics():
                 for item in results[:10]
             ]
     }
+
+# =========================================================
+# IOT SMART DESK TELEMETRY
+# =========================================================
+
+# In-memory status store for smart desk live telemetry
+smart_desk_status = {
+    "occupied": False,
+    "peace_interrupted": False,
+    "last_updated": None
+}
+
+@app.route('/api/iot/telemetry', methods=['POST'])
+def receive_telemetry():
+    """Receives live motion & sound sensor data from ESP32."""
+    data = request.get_json(silent=True) or {}
+
+    smart_desk_status["occupied"] = bool(data.get("motion", False))
+    smart_desk_status["peace_interrupted"] = bool(data.get("sound_interrupted", False))
+    smart_desk_status["last_updated"] = datetime.utcnow().isoformat()
+
+    print(f"[IoT System] Occupied: {smart_desk_status['occupied']} | Sound Alert: {smart_desk_status['peace_interrupted']}")
+
+    return jsonify({
+        "status": "success",
+        "message": "Telemetry received",
+        "data": smart_desk_status
+    }), 200
+
+@app.route('/api/iot/status', methods=['GET'])
+def get_desk_status():
+    """Returns current desk state to frontend client."""
+    return jsonify(smart_desk_status), 200
 
 
 # =========================================================
